@@ -78,7 +78,7 @@ class LoginViewController: UIViewController {
         
         self.view.addSubview(loginButton)
         
-        
+        // Autolayout Constraints
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         usernameLabel.translatesAutoresizingMaskIntoConstraints = false
         emailLabel.translatesAutoresizingMaskIntoConstraints = false
