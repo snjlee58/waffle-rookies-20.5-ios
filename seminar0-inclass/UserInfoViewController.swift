@@ -66,6 +66,7 @@ class UserInfoViewController: UIViewController {
         
         self.view.addSubview(logoutButton)
     
+        // Autolayout Constraints
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         usernameLabel.translatesAutoresizingMaskIntoConstraints = false
         emailLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -74,6 +75,7 @@ class UserInfoViewController: UIViewController {
         email.translatesAutoresizingMaskIntoConstraints = false
         
         logoutButton.translatesAutoresizingMaskIntoConstraints = false
+        
         NSLayoutConstraint.activate([
             // Labels
             titleLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),

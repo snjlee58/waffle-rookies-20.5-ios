@@ -28,7 +28,6 @@ class LoginViewController: UIViewController {
         let leadingTrailingConstraint: CGFloat = 25
         let fontSize: CGFloat = 17
         
-        
         // Labels
         let titleLabel = UILabel()
         titleLabel.text = "로그인"
@@ -51,7 +50,6 @@ class LoginViewController: UIViewController {
         
         // TextFields
         usernameTextField.borderStyle = .roundedRect
-        usernameTextField.placeholder = "두 글자 이상"
         
         emailTextField.borderStyle = .roundedRect
         
@@ -64,7 +62,6 @@ class LoginViewController: UIViewController {
         loginButton.backgroundColor = .gray
         loginButton.layer.cornerRadius = 5
         loginButton.addTarget(self, action: #selector(tapLoginButton), for: .touchUpInside)
-        
         
         // Add Subviews
         self.view.addSubview(titleLabel)
@@ -122,8 +119,6 @@ class LoginViewController: UIViewController {
             loginButton.topAnchor.constraint(equalTo: passwordLabel.bottomAnchor, constant: 50),
             loginButton.widthAnchor.constraint(equalTo: self.view.widthAnchor, constant: -250)
         ])
-        
-        
     }
     
     override func viewDidLoad() {
@@ -142,6 +137,4 @@ class LoginViewController: UIViewController {
         nextVC.emailText = emailTextField.text
         navigationController?.pushViewController(nextVC, animated: true)
     }
-    
-
 }

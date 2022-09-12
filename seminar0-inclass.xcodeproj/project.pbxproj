@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		94EB0C2028CBA9F800765981 /* UserInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94EB0C1F28CBA9F800765981 /* UserInfoViewController.swift */; };
-		BF465DC028C77CC600CBBF6B /* NextViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF465DBF28C77CC600CBBF6B /* NextViewController.swift */; };
 		BF59793728C753F400254BA5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF59793628C753F400254BA5 /* AppDelegate.swift */; };
 		BF59793928C753F400254BA5 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF59793828C753F400254BA5 /* SceneDelegate.swift */; };
 		BF59793B28C753F400254BA5 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF59793A28C753F400254BA5 /* LoginViewController.swift */; };
@@ -19,7 +18,6 @@
 
 /* Begin PBXFileReference section */
 		94EB0C1F28CBA9F800765981 /* UserInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoViewController.swift; sourceTree = "<group>"; };
-		BF465DBF28C77CC600CBBF6B /* NextViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextViewController.swift; sourceTree = "<group>"; };
 		BF59793328C753F400254BA5 /* seminar0-inclass.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "seminar0-inclass.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF59793628C753F400254BA5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BF59793828C753F400254BA5 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -68,7 +66,6 @@
 				BF59793F28C753F600254BA5 /* Assets.xcassets */,
 				BF59794128C753F600254BA5 /* LaunchScreen.storyboard */,
 				BF59794428C753F600254BA5 /* Info.plist */,
-				BF465DBF28C77CC600CBBF6B /* NextViewController.swift */,
 			);
 			path = "seminar0-inclass";
 			sourceTree = "<group>";
@@ -145,7 +142,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				BF59793B28C753F400254BA5 /* LoginViewController.swift in Sources */,
-				BF465DC028C77CC600CBBF6B /* NextViewController.swift in Sources */,
 				94EB0C2028CBA9F800765981 /* UserInfoViewController.swift in Sources */,
 				BF59793728C753F400254BA5 /* AppDelegate.swift in Sources */,
 				BF59793928C753F400254BA5 /* SceneDelegate.swift in Sources */,
