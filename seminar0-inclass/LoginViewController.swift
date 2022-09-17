@@ -135,6 +135,12 @@ class LoginViewController: UIViewController {
         let nextVC = UserInfoViewController()
         nextVC.usernameText = usernameTextField.text
         nextVC.emailText = emailTextField.text
+//        let userInfo = UserInfo(username: usernameTextField.text, email: emailTextField.text)
         navigationController?.pushViewController(nextVC, animated: true)
     }
+}
+
+struct UserInfo {
+    var username: String?
+    var email: String?
 }
