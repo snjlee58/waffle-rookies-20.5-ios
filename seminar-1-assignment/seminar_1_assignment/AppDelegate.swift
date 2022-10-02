@@ -1,8 +1,8 @@
 //
 //  AppDelegate.swift
-//  seminar0-inclass
+//  seminar_1_assignment
 //
-//  Created by 한상현 on 2022/09/06.
+//  Created by 이선재 on 2022/09/17.
 //
 
 import UIKit
