@@ -10,7 +10,6 @@ import RxCocoa
 import RxSwift
 
 struct Movie: Codable {
-//    let uuidString: String
     let title: String
     let poster_path: String
     let vote_average: Float
@@ -32,7 +31,6 @@ struct Movie: Codable {
         id = try container.decodeIfPresent(Int.self, forKey: .id) ?? 0
 
         isLiked = false
-//        uuidString = UUID().uuidString
     }
     
     init(
@@ -41,7 +39,6 @@ struct Movie: Codable {
         vote_average: Float,
         overview: String,
         isLiked: Bool = false,
-//        uuidString: String,
         id: Int
         
     ) {
@@ -50,7 +47,6 @@ struct Movie: Codable {
         self.vote_average = vote_average
         self.overview = overview
         self.isLiked = isLiked
-//        self.uuidString = uuidString
         self.id = id
     }
 }

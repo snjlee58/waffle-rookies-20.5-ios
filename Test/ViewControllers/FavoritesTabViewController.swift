@@ -88,7 +88,6 @@ class FavoritesTabViewController: UIViewController {
     @objc func favoritesTabNotification(_ notification: Notification) {
         guard let starDiary = notification.object as? [String: Any] else { return }
         guard let isStar = starDiary["isStar"] as? Bool else { return }
-//        guard let uuidString = starDiary["uuidString"] as? String else { return }
         guard let id = starDiary["id"] as? Int else { return }
         guard let index = self.favoritesViewModel.favoritesList.firstIndex(where: { $0.id == id }) else { return }
         

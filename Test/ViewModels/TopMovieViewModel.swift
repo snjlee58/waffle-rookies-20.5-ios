@@ -51,8 +51,6 @@ class TopMovieViewModel: Decodable {
                 observer.onCompleted()
             }
             
-            // Finish pagination
-            
             return Disposables.create()
         }
     }
@@ -70,8 +68,6 @@ class TopMovieViewModel: Decodable {
                     .responseDecodable(of: TopMovieViewModel.self) { response in
                         switch response.result {
                         case .success(let result):
-//                            self.results = result.results
-//                            completionHandler(nil, self.results)
                             completionHandler(nil, result.results)
                         case .failure(let error):
                             print(error)

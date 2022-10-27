@@ -15,21 +15,6 @@ class MovieDetailViewController: UIViewController {
     
     var movie: Movie
     
-//    var starStatusObserver = PublishRelay<Movie>()
-//    var starStatusObservable: Observable<Movie> {
-//        return starStatusObserver.asObservable()
-//    }
-//    
-//    var favoriteListObserver = PublishRelay<Movie>()
-//    var favoriteListObservable: Observable<Movie> {
-//        return favoriteListObserver.asObservable()
-//    }
-    
-//    var movieDetailObserver = PublishRelay<(String, Bool)>()
-//    var movieDetailObservable: Observable<(String, Bool)> {
-//        return movieDetailObserver.asObservable()
-//    }
-    
     let posterImageView = UIImageView()
     let titleLabel = UILabel()
     let ratingLabel = UILabel()
@@ -50,7 +35,6 @@ class MovieDetailViewController: UIViewController {
     
     private func setupLayout() {
         // starButton
-//        self.starButton.image = self.movie.isLiked ? UIImage(systemName: "star.fill") : UIImage(systemName: "star")
         self.starButton.tintColor = .orange
         self.navigationItem.rightBarButtonItem = self.starButton
         
@@ -65,8 +49,6 @@ class MovieDetailViewController: UIViewController {
             self.posterImageView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor, constant: -100),
             self.posterImageView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
             self.posterImageView.bottomAnchor.constraint(equalTo: self.posterImageView.topAnchor, constant: 200),
-//            self.posterImageView.widthAnchor.constraint(equalToConstant: 150),
-//            self.posterImageView.heightAnchor.constraint(equalToConstant: 150),
         ])
         
         // titleLabel
@@ -136,9 +118,6 @@ class MovieDetailViewController: UIViewController {
         }
         
         self.movie.isLiked = !isStar
-        
-        // Send to Observer
-//        self.starStatusObserver.accept(self.movie)
         
         // NotificationCenter (update isLiked)
         NotificationCenter.default.post(name: NSNotification.Name("starDiary"),

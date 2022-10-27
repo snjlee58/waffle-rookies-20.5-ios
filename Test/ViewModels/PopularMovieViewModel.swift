@@ -40,7 +40,6 @@ class PopularMovieViewModel: Decodable {
                 
                 if let movies = movies {
                     self.results.append(contentsOf: movies)
-//                    print(self.results)
                     observer.onNext(self.results)
                 }
                 
@@ -50,8 +49,6 @@ class PopularMovieViewModel: Decodable {
                 
                 observer.onCompleted()
             }
-            
-            // Finish pagination
             
             return Disposables.create()
         }
@@ -70,8 +67,6 @@ class PopularMovieViewModel: Decodable {
                     .responseDecodable(of: PopularMovieViewModel.self) { response in
                         switch response.result {
                         case .success(let result):
-//                            self.results = result.results
-//                            completionHandler(nil, self.results)
                             completionHandler(nil, result.results)
                         case .failure(let error):
                             print(error)
