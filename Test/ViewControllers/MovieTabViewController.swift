@@ -8,7 +8,7 @@
 import UIKit
 
 class MovieTabViewController: UIViewController {
-    let filterSegControl = UISegmentedControl(items: ["Popular", "Latest"])
+    let filterSegControl = UISegmentedControl(items: ["Popular", "Top Rated"])
     
     let popularMovieVC: PopularMovieListViewController
     let topMovieVC: TopMovieListViewController
@@ -26,7 +26,6 @@ class MovieTabViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
-        self.hidesBottomBarWhenPushed = true
     }
     
     func configureUI() {

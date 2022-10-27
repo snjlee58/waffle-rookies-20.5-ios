@@ -18,8 +18,8 @@ class MovieDetailViewController: UIViewController {
     let posterImageView = UIImageView()
     let titleLabel = UILabel()
     let ratingLabel = UILabel()
-    let overviewLabel = UILabel()
     var starButton = UIBarButtonItem()
+    let overviewTextView = UITextView()
     
     init(movie: Movie) {
         self.movie = movie
@@ -78,21 +78,19 @@ class MovieDetailViewController: UIViewController {
         ])
         self.ratingLabel.textAlignment = .center
         
-        // overviewLabel
-        self.overviewLabel.font = .systemFont(ofSize: 15)
-        self.overviewLabel.lineBreakMode = .byWordWrapping
-        self.overviewLabel.numberOfLines = 0
+        // overviewTextView
+        self.overviewTextView.font = .systemFont(ofSize: 12)
+        self.overviewTextView.isSelectable = false
         
-        self.view.addSubview(self.overviewLabel)
-        self.overviewLabel.translatesAutoresizingMaskIntoConstraints = false
+        self.view.addSubview(self.overviewTextView)
+        self.overviewTextView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            self.ratingLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-            self.overviewLabel.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor, constant: 5),
-            self.overviewLabel.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor, constant: -10),
-            self.overviewLabel.topAnchor.constraint(equalTo: self.ratingLabel.bottomAnchor, constant: 10),
-            self.overviewLabel.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: -10)
+            self.overviewTextView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+            self.overviewTextView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor, constant: 5),
+            self.overviewTextView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor, constant: -10),
+            self.overviewTextView.topAnchor.constraint(equalTo: self.ratingLabel.bottomAnchor, constant: 10),
+            self.overviewTextView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: -10)
         ])
-        
     }
     
     func configure() {
@@ -104,7 +102,7 @@ class MovieDetailViewController: UIViewController {
         
         self.titleLabel.text = self.movie.title
         self.ratingLabel.text = "⭐️ \(self.movie.vote_average)"
-        self.overviewLabel.text = self.movie.overview
+        self.overviewTextView.text = self.movie.overview
 
     }
     
@@ -123,7 +121,6 @@ class MovieDetailViewController: UIViewController {
         NotificationCenter.default.post(name: NSNotification.Name("starDiary"),
                                         object: [
                                             "isStar": self.movie.isLiked ?? false,
-//                                            "uuidString": self.movie.uuidString,
                                             "id": self.movie.id
                                         ],
                                         userInfo: nil)

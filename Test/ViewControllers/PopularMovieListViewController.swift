@@ -83,7 +83,9 @@ class PopularMovieListViewController: UIViewController {
         
         // Add to favoritesList if Liked
         if (isStar) {
-            self.favoritesViewModel.favoritesList.append(self.viewModel.results[index])
+            if !self.favoritesViewModel.isInFavorites(movie: self.viewModel.results[index]) {
+                self.favoritesViewModel.favoritesList.append(self.viewModel.results[index])
+            }
         } else {
             self.favoritesViewModel.favoritesList.removeAll { $0.id == self.viewModel.results[index].id }
         }

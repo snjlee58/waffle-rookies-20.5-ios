@@ -77,7 +77,6 @@ class TopMovieListViewController: UIViewController {
     @objc func starDiaryNotification(_ notification: Notification) {
         guard let starDiary = notification.object as? [String: Any] else { return }
         guard let isStar = starDiary["isStar"] as? Bool else { return }
-//        guard let uuidString = starDiary["uuidString"] as? String else { return }
         guard let id = starDiary["id"] as? Int else { return }
         guard let index = self.viewModel.results.firstIndex(where: { $0.id == id }) else { return }
         
@@ -86,7 +85,9 @@ class TopMovieListViewController: UIViewController {
         
         // Add to favoritesList if Liked
         if (isStar) {
-            self.favoritesViewModel.favoritesList.append(self.viewModel.results[index])
+            if !self.favoritesViewModel.isInFavorites(movie: self.viewModel.results[index]) {
+                self.favoritesViewModel.favoritesList.append(self.viewModel.results[index])
+            }
         } else {
             self.favoritesViewModel.favoritesList.removeAll { $0.id == self.viewModel.results[index].id }
         }
