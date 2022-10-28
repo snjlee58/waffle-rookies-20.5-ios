@@ -103,22 +103,20 @@ class MovieDetailViewController: UIViewController {
         self.titleLabel.text = self.movie.title
         self.ratingLabel.text = "⭐️ \(self.movie.vote_average)"
         self.overviewTextView.text = self.movie.overview
-
     }
     
     @objc func tapStarButton() {
         let isStar = self.movie.isLiked
-        
+
         if isStar {
             self.starButton.image = UIImage(systemName: "star")
         } else {
             self.starButton.image = UIImage(systemName: "star.fill")
         }
-        
         self.movie.isLiked = !isStar
         
         // NotificationCenter (update isLiked)
-        NotificationCenter.default.post(name: NSNotification.Name("starDiary"),
+        NotificationCenter.default.post(name: NSNotification.Name("isLikedNotificationMovie"),
                                         object: [
                                             "isStar": self.movie.isLiked ?? false,
                                             "id": self.movie.id
@@ -138,7 +136,6 @@ class MovieDetailViewController: UIViewController {
             NotificationCenter.default.post(name: NSNotification.Name("favoritesTab"),
                                             object: [
                                                 "isStar": self.movie.isLiked ?? false,
-//                                                "uuidString": self.movie.uuidString,
                                                 "id": self.movie.id
                                             ],
                                             userInfo: nil)

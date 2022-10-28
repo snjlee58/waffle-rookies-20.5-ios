@@ -73,7 +73,6 @@ class MovieCollectionViewCell: UICollectionViewCell {
             ratingLabel.topAnchor.constraint(equalTo: self.titleLabel.bottomAnchor, constant: 5),
             ratingLabel.bottomAnchor.constraint(equalTo: self.ratingLabel.topAnchor, constant: 20)
         ])
-  
     }
     
     func configure(movie: Movie) {

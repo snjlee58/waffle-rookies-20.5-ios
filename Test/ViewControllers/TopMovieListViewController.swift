@@ -35,8 +35,8 @@ class TopMovieListViewController: UIViewController {
         
         // NotificationCenter addObserver
         NotificationCenter.default.addObserver(self,
-                                               selector: #selector(starDiaryNotification(_:)),
-                                               name: NSNotification.Name("starDiary"),
+                                               selector: #selector(isLikedNotification(_:)),
+                                               name: NSNotification.Name("isLikedNotificationMovie"),
                                                object: nil)
         
         // collectionView
@@ -52,8 +52,6 @@ class TopMovieListViewController: UIViewController {
         self.collectionView.register(MovieCollectionViewCell.self, forCellWithReuseIdentifier: "MovieCollectionViewCell")
         self.collectionView.rx.setDelegate(self)
             .disposed(by: disposeBag)
-        
-
     }
     
     private func bindCollectionView() {
@@ -74,10 +72,10 @@ class TopMovieListViewController: UIViewController {
         })
     }
     
-    @objc func starDiaryNotification(_ notification: Notification) {
-        guard let starDiary = notification.object as? [String: Any] else { return }
-        guard let isStar = starDiary["isStar"] as? Bool else { return }
-        guard let id = starDiary["id"] as? Int else { return }
+    @objc func isLikedNotification(_ notification: Notification) {
+        guard let isLikedNotificationMovie = notification.object as? [String: Any] else { return }
+        guard let isStar = isLikedNotificationMovie["isStar"] as? Bool else { return }
+        guard let id = isLikedNotificationMovie["id"] as? Int else { return }
         guard let index = self.viewModel.results.firstIndex(where: { $0.id == id }) else { return }
         
         // Update isLiked in movieList
@@ -95,7 +93,6 @@ class TopMovieListViewController: UIViewController {
 }
 
 extension TopMovieListViewController: UICollectionViewDelegate {
-    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if self.favoritesViewModel.isInFavorites(movie: self.viewModel.results[indexPath.row]) {
             self.viewModel.results[indexPath.row].isLiked = true

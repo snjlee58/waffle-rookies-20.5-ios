@@ -57,7 +57,6 @@ class FavoritesViewModel {
         }.filter({
             $0.isLiked == true
         })
-        
     }
     
     func isInFavorites(movie: Movie) -> Bool {

@@ -49,7 +49,6 @@ class PopularMovieViewModel: Decodable {
                 
                 observer.onCompleted()
             }
-            
             return Disposables.create()
         }
     }
@@ -59,23 +58,21 @@ class PopularMovieViewModel: Decodable {
 
         let parameters = MovieRequestModel(page: page)
         
-            let headers: HTTPHeaders = [
-                "Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxMDMzZWEzYTRhM2RiNmM4ZmE2NDYxNDkzYzA3NGI4YiIsInN1YiI6IjYzNDI1OTY0YTI4NGViMDA3OWM0MTYxZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.eV0F9zBLPdjef9gth_012Q3We_jiY_bjLRyuaqS9DkI"
-            ]
+        let headers: HTTPHeaders = [
+            "Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxMDMzZWEzYTRhM2RiNmM4ZmE2NDYxNDkzYzA3NGI4YiIsInN1YiI6IjYzNDI1OTY0YTI4NGViMDA3OWM0MTYxZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.eV0F9zBLPdjef9gth_012Q3We_jiY_bjLRyuaqS9DkI"
+        ]
 
-            AF.request(url, method: .get, parameters: parameters, headers: headers)
-                    .responseDecodable(of: PopularMovieViewModel.self) { response in
-                        switch response.result {
-                        case .success(let result):
-                            completionHandler(nil, result.results)
-                        case .failure(let error):
-                            print(error)
-                            completionHandler(error, nil)
-                        }
-                    }
-                    .resume()
+        AF.request(url, method: .get, parameters: parameters, headers: headers)
+            .responseDecodable(of: PopularMovieViewModel.self) { response in
+                switch response.result {
+                case .success(let result):
+                    completionHandler(nil, result.results)
+                case .failure(let error):
+                    print(error)
+                    completionHandler(error, nil)
+                }
+            }
+            .resume()
         }
-    
-    
 }
 
