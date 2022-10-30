@@ -28,7 +28,6 @@ class MovieCollectionViewCell: UICollectionViewCell {
         // posterImageView
         self.posterImageView.layer.cornerRadius = 8
         self.posterImageView.contentMode = .scaleAspectFit
-//        self.posterImageView.clipsToBounds = true // look up wtf this is
         
         self.contentView.addSubview(self.posterImageView)
         self.posterImageView.translatesAutoresizingMaskIntoConstraints = false
@@ -38,8 +37,6 @@ class MovieCollectionViewCell: UICollectionViewCell {
             self.posterImageView.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -50),
             self.posterImageView.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 5),
             self.posterImageView.bottomAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 150)
-//            self.posterImageView.widthAnchor.constraint(equalToConstant: 150),
-//            self.posterImageView.heightAnchor.constraint(equalToConstant: 150),
         ])
         
         // titleLabel
@@ -76,7 +73,6 @@ class MovieCollectionViewCell: UICollectionViewCell {
             ratingLabel.topAnchor.constraint(equalTo: self.titleLabel.bottomAnchor, constant: 5),
             ratingLabel.bottomAnchor.constraint(equalTo: self.ratingLabel.topAnchor, constant: 20)
         ])
-  
     }
     
     func configure(movie: Movie) {

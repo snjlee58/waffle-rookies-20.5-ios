@@ -8,7 +8,7 @@
 import UIKit
 
 class MovieTabViewController: UIViewController {
-    let filterSegControl = UISegmentedControl(items: ["Popular", "Latest"])
+    let filterSegControl = UISegmentedControl(items: ["Popular", "Top Rated"])
     
     let popularMovieVC: PopularMovieListViewController
     let topMovieVC: TopMovieListViewController
@@ -26,7 +26,6 @@ class MovieTabViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
-        self.hidesBottomBarWhenPushed = true
     }
     
     func configureUI() {
@@ -44,13 +43,14 @@ class MovieTabViewController: UIViewController {
         ])
         filterSegControl.addTarget(self, action: #selector(didTapSegment), for: .valueChanged)
               self.filterSegControl.selectedSegmentIndex = 0
-              
 
+        // Add popular movies child VC
         addChild(popularMovieVC)
         self.view.addSubview(popularMovieVC.view)
         popularMovieVC.didMove(toParent: self)
         popularMovieVC.view.frame.origin.y = 150
 
+        // Add top-rated movies child VC
         addChild(topMovieVC)
         self.view.addSubview(topMovieVC.view)
         topMovieVC.didMove(toParent: self)
@@ -68,8 +68,5 @@ class MovieTabViewController: UIViewController {
         } else {
             self.topMovieVC.view.isHidden = false
         }
-        
     }
-
 }
-

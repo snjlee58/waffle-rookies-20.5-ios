@@ -35,12 +35,13 @@ class PopularMovieListViewController: UIViewController {
         
         // NotificationCenter addObserver
         NotificationCenter.default.addObserver(self,
-                                               selector: #selector(starDiaryNotification(_:)),
-                                               name: NSNotification.Name("starDiary"),
+                                               selector: #selector(isLikedNotification(_:)),
+                                               name: NSNotification.Name("isLikedNotificationMovie"),
                                                object: nil)
         
         // collectionView
         bindCollectionView()
+        
         self.view.addSubview(collectionView)
         self.collectionView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -52,7 +53,6 @@ class PopularMovieListViewController: UIViewController {
         self.collectionView.register(MovieCollectionViewCell.self, forCellWithReuseIdentifier: "MovieCollectionViewCell")
         self.collectionView.rx.setDelegate(self)
             .disposed(by: disposeBag)
-        
     }
     
     private func bindCollectionView() {
@@ -72,10 +72,10 @@ class PopularMovieListViewController: UIViewController {
         })
     }
     
-    @objc func starDiaryNotification(_ notification: Notification) {
-        guard let starDiary = notification.object as? [String: Any] else { return }
-        guard let isStar = starDiary["isStar"] as? Bool else { return }
-        guard let id = starDiary["id"] as? Int else { return }
+    @objc func isLikedNotification(_ notification: Notification) {
+        guard let isLikedNotificationMovie = notification.object as? [String: Any] else { return }
+        guard let isStar = isLikedNotificationMovie["isStar"] as? Bool else { return }
+        guard let id = isLikedNotificationMovie["id"] as? Int else { return }
         guard let index = self.viewModel.results.firstIndex(where: { $0.id == id }) else { return }
         
         // Update isLiked in movieList
@@ -83,12 +83,13 @@ class PopularMovieListViewController: UIViewController {
         
         // Add to favoritesList if Liked
         if (isStar) {
-            self.favoritesViewModel.favoritesList.append(self.viewModel.results[index])
+            if !self.favoritesViewModel.isInFavorites(movie: self.viewModel.results[index]) {
+                self.favoritesViewModel.favoritesList.append(self.viewModel.results[index])
+            }
         } else {
             self.favoritesViewModel.favoritesList.removeAll { $0.id == self.viewModel.results[index].id }
         }
     }
-
 }
 
 

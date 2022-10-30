@@ -15,26 +15,11 @@ class MovieDetailViewController: UIViewController {
     
     var movie: Movie
     
-//    var starStatusObserver = PublishRelay<Movie>()
-//    var starStatusObservable: Observable<Movie> {
-//        return starStatusObserver.asObservable()
-//    }
-//    
-//    var favoriteListObserver = PublishRelay<Movie>()
-//    var favoriteListObservable: Observable<Movie> {
-//        return favoriteListObserver.asObservable()
-//    }
-    
-//    var movieDetailObserver = PublishRelay<(String, Bool)>()
-//    var movieDetailObservable: Observable<(String, Bool)> {
-//        return movieDetailObserver.asObservable()
-//    }
-    
     let posterImageView = UIImageView()
     let titleLabel = UILabel()
     let ratingLabel = UILabel()
-    let overviewLabel = UILabel()
     var starButton = UIBarButtonItem()
+    let overviewTextView = UITextView()
     
     init(movie: Movie) {
         self.movie = movie
@@ -50,7 +35,6 @@ class MovieDetailViewController: UIViewController {
     
     private func setupLayout() {
         // starButton
-//        self.starButton.image = self.movie.isLiked ? UIImage(systemName: "star.fill") : UIImage(systemName: "star")
         self.starButton.tintColor = .orange
         self.navigationItem.rightBarButtonItem = self.starButton
         
@@ -65,8 +49,6 @@ class MovieDetailViewController: UIViewController {
             self.posterImageView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor, constant: -100),
             self.posterImageView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
             self.posterImageView.bottomAnchor.constraint(equalTo: self.posterImageView.topAnchor, constant: 200),
-//            self.posterImageView.widthAnchor.constraint(equalToConstant: 150),
-//            self.posterImageView.heightAnchor.constraint(equalToConstant: 150),
         ])
         
         // titleLabel
@@ -96,21 +78,19 @@ class MovieDetailViewController: UIViewController {
         ])
         self.ratingLabel.textAlignment = .center
         
-        // overviewLabel
-        self.overviewLabel.font = .systemFont(ofSize: 15)
-        self.overviewLabel.lineBreakMode = .byWordWrapping
-        self.overviewLabel.numberOfLines = 0
+        // overviewTextView
+        self.overviewTextView.font = .systemFont(ofSize: 12)
+        self.overviewTextView.isSelectable = false
         
-        self.view.addSubview(self.overviewLabel)
-        self.overviewLabel.translatesAutoresizingMaskIntoConstraints = false
+        self.view.addSubview(self.overviewTextView)
+        self.overviewTextView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            self.ratingLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-            self.overviewLabel.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor, constant: 5),
-            self.overviewLabel.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor, constant: -10),
-            self.overviewLabel.topAnchor.constraint(equalTo: self.ratingLabel.bottomAnchor, constant: 10),
-            self.overviewLabel.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: -10)
+            self.overviewTextView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+            self.overviewTextView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor, constant: 5),
+            self.overviewTextView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor, constant: -10),
+            self.overviewTextView.topAnchor.constraint(equalTo: self.ratingLabel.bottomAnchor, constant: 10),
+            self.overviewTextView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: -10)
         ])
-        
     }
     
     func configure() {
@@ -122,29 +102,23 @@ class MovieDetailViewController: UIViewController {
         
         self.titleLabel.text = self.movie.title
         self.ratingLabel.text = "⭐️ \(self.movie.vote_average)"
-        self.overviewLabel.text = self.movie.overview
-
+        self.overviewTextView.text = self.movie.overview
     }
     
     @objc func tapStarButton() {
         let isStar = self.movie.isLiked
-        
+
         if isStar {
             self.starButton.image = UIImage(systemName: "star")
         } else {
             self.starButton.image = UIImage(systemName: "star.fill")
         }
-        
         self.movie.isLiked = !isStar
         
-        // Send to Observer
-//        self.starStatusObserver.accept(self.movie)
-        
         // NotificationCenter (update isLiked)
-        NotificationCenter.default.post(name: NSNotification.Name("starDiary"),
+        NotificationCenter.default.post(name: NSNotification.Name("isLikedNotificationMovie"),
                                         object: [
                                             "isStar": self.movie.isLiked ?? false,
-//                                            "uuidString": self.movie.uuidString,
                                             "id": self.movie.id
                                         ],
                                         userInfo: nil)
@@ -162,7 +136,6 @@ class MovieDetailViewController: UIViewController {
             NotificationCenter.default.post(name: NSNotification.Name("favoritesTab"),
                                             object: [
                                                 "isStar": self.movie.isLiked ?? false,
-//                                                "uuidString": self.movie.uuidString,
                                                 "id": self.movie.id
                                             ],
                                             userInfo: nil)

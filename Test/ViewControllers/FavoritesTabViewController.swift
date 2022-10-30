@@ -33,12 +33,11 @@ class FavoritesTabViewController: UIViewController {
         self.configureCollectionView()
         self.title = "Favorites"
         self.favoritesViewModel.loadFavoritesList()
-//        print("run")
         
         // NotificationCenter addObserver (update isLiked)
         NotificationCenter.default.addObserver(self,
-                                               selector: #selector(starDiaryNotification(_:)),
-                                               name: NSNotification.Name("starDiary"),
+                                               selector: #selector(isLikedNotification(_:)),
+                                               name: NSNotification.Name("isLikedNotificationMovie"),
                                                object: nil)
         
         // NotificationCenter addObserver (update FavoritesTabList)
@@ -74,11 +73,10 @@ class FavoritesTabViewController: UIViewController {
             .disposed(by: disposeBag)
     }
     
-    @objc func starDiaryNotification(_ notification: Notification) {
-        guard let starDiary = notification.object as? [String: Any] else { return }
-        guard let isStar = starDiary["isStar"] as? Bool else { return }
-//        guard let uuidString = starDiary["uuidString"] as? String else { return }
-        guard let id = starDiary["id"] as? Int else { return }
+    @objc func isLikedNotification(_ notification: Notification) {
+        guard let isLikedNotificationMovie = notification.object as? [String: Any] else { return }
+        guard let isStar = isLikedNotificationMovie["isStar"] as? Bool else { return }
+        guard let id = isLikedNotificationMovie["id"] as? Int else { return }
         guard let index = self.favoritesViewModel.favoritesList.firstIndex(where: { $0.id == id }) else { return }
         
         // Update isLiked in movieList
@@ -86,10 +84,9 @@ class FavoritesTabViewController: UIViewController {
     }
     
     @objc func favoritesTabNotification(_ notification: Notification) {
-        guard let starDiary = notification.object as? [String: Any] else { return }
-        guard let isStar = starDiary["isStar"] as? Bool else { return }
-//        guard let uuidString = starDiary["uuidString"] as? String else { return }
-        guard let id = starDiary["id"] as? Int else { return }
+        guard let isLikedNotificationMovie = notification.object as? [String: Any] else { return }
+        guard let isStar = isLikedNotificationMovie["isStar"] as? Bool else { return }
+        guard let id = isLikedNotificationMovie["id"] as? Int else { return }
         guard let index = self.favoritesViewModel.favoritesList.firstIndex(where: { $0.id == id }) else { return }
         
         self.favoritesViewModel.favoritesList[index].isLiked = isStar
@@ -108,5 +105,4 @@ extension FavoritesTabViewController: UICollectionViewDelegate {
         navigationController?.pushViewController(movieDetailVC, animated: true)
         self.hidesBottomBarWhenPushed = false
     }
-    
 }

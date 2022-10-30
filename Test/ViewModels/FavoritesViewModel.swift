@@ -34,7 +34,6 @@ class FavoritesViewModel {
                 "vote_average": $0.vote_average,
                 "overview": $0.overview,
                 "isLiked": $0.isLiked,
-//                "uuidString": $0.uuidString,
                 "id": $0.id
             ]
         }
@@ -53,18 +52,14 @@ class FavoritesViewModel {
             guard let vote_average = $0["vote_average"] as? Float else { return nil }
             guard let overview = $0["overview"] as? String else { return nil }
             guard let isLiked = $0["isLiked"] as? Bool else { return nil }
-//            guard let uuidString = $0["uuidString"] as? String else { return nil }
             guard let id = $0["id"] as? Int else { return nil }
-//            return Movie(title: title, poster_path: poster_path, vote_average: vote_average, overview: overview, isLiked: isLiked, uuidString: uuidString, id: id)
             return Movie(title: title, poster_path: poster_path, vote_average: vote_average, overview: overview, isLiked: isLiked, id: id)
         }.filter({
             $0.isLiked == true
         })
-        
     }
     
     func isInFavorites(movie: Movie) -> Bool {
-//        print("\(movie.id)")
         let isInFavorites = self.favoritesList.contains(where: { $0.id == movie.id })
         return isInFavorites
     }

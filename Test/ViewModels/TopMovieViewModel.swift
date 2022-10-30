@@ -32,7 +32,6 @@ class TopMovieViewModel: Decodable {
     func fetchMovies(pagination: Bool, page: Int) -> Observable<[Movie]> {
         isPaginating = true
         return Observable.create { (observer) -> Disposable in
-            
             self.request(pagination: pagination, page: page) { (error, movies) in
                 if let error = error {
                     observer.onError(error)
@@ -40,7 +39,6 @@ class TopMovieViewModel: Decodable {
                 
                 if let movies = movies {
                     self.results.append(contentsOf: movies)
-//                    print(self.results)
                     observer.onNext(self.results)
                 }
                 
@@ -51,8 +49,6 @@ class TopMovieViewModel: Decodable {
                 observer.onCompleted()
             }
             
-            // Finish pagination
-            
             return Disposables.create()
         }
     }
@@ -62,25 +58,21 @@ class TopMovieViewModel: Decodable {
 
         let parameters = MovieRequestModel(page: page)
         
-            let headers: HTTPHeaders = [
-                "Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxMDMzZWEzYTRhM2RiNmM4ZmE2NDYxNDkzYzA3NGI4YiIsInN1YiI6IjYzNDI1OTY0YTI4NGViMDA3OWM0MTYxZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.eV0F9zBLPdjef9gth_012Q3We_jiY_bjLRyuaqS9DkI"
-            ]
+        let headers: HTTPHeaders = [
+            "Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxMDMzZWEzYTRhM2RiNmM4ZmE2NDYxNDkzYzA3NGI4YiIsInN1YiI6IjYzNDI1OTY0YTI4NGViMDA3OWM0MTYxZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.eV0F9zBLPdjef9gth_012Q3We_jiY_bjLRyuaqS9DkI"
+        ]
 
-            AF.request(url, method: .get, parameters: parameters, headers: headers)
-                    .responseDecodable(of: TopMovieViewModel.self) { response in
-                        switch response.result {
-                        case .success(let result):
-//                            self.results = result.results
-//                            completionHandler(nil, self.results)
-                            completionHandler(nil, result.results)
-                        case .failure(let error):
-                            print(error)
-                            completionHandler(error, nil)
-                        }
+        AF.request(url, method: .get, parameters: parameters, headers: headers)
+                .responseDecodable(of: TopMovieViewModel.self) { response in
+                    switch response.result {
+                    case .success(let result):
+                        completionHandler(nil, result.results)
+                    case .failure(let error):
+                        print(error)
+                        completionHandler(error, nil)
                     }
-                    .resume()
-        }
-    
-    
+                }
+                .resume()
+        } 
 }
 
