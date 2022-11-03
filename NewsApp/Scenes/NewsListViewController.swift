@@ -6,15 +6,19 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
 class NewsListViewController: UIViewController {
-    let newsModel: NewsModel
+    private let viewModel: NewsViewModel
     
-    let tableView = UITableView()
-    let searchBar = UISearchBar()
+    private let tableView = UITableView()
+    private let searchBar = UISearchBar()
     
-    init(newsModel: NewsModel) {
-        self.newsModel = newsModel
+    private var disposeBag = DisposeBag()
+    
+    init(viewModel: NewsViewModel) {
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -26,14 +30,20 @@ class NewsListViewController: UIViewController {
         super.viewDidLoad()
         setupLayout()
         applyDesign()
+        
+        bindTableView()
     }
     
-    func fetchArticles(query: String) {
-        self.newsModel.request(from: query, completionHandler: {
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
-            }
-        })
+    private func bindTableView() {
+        tableView.register(NewsTableViewCell.self, forCellReuseIdentifier: "NewsTableViewCell")
+        
+        tableView.rx.setDelegate(self)
+        tableView.rx.setPrefetchDataSource(self)
+        
+        self.viewModel.newsDataSource
+            .bind(to: self.tableView.rx.items(cellIdentifier: "NewsTableViewCell", cellType: NewsTableViewCell.self)) { index, newsData, cell in
+                cell.configure(newsData)
+            }.disposed(by: self.disposeBag)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -44,13 +54,15 @@ class NewsListViewController: UIViewController {
 }
 
 extension NewsListViewController {
-    private func setupLayout() {
-        // Configure searchBar
+    private func setupNavigationBar() {
         self.navigationItem.titleView = self.searchBar
+        searchBar.delegate = self
         let searchBarButton = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(didTapSearchButton))
         self.navigationItem.rightBarButtonItem = searchBarButton
-        
-        searchBar.delegate = self
+    }
+    
+    private func setupLayout() {
+        setupNavigationBar()
         
         // Configure tableView
         self.view.addSubview(tableView)
@@ -61,10 +73,6 @@ extension NewsListViewController {
             tableView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor)
         ])
-        tableView.register(NewsTableViewCell.self, forCellReuseIdentifier: "NewsTableViewCell")
-        
-        tableView.delegate = self
-        tableView.dataSource = self
     }
 
     private func applyDesign() {
@@ -76,29 +84,21 @@ extension NewsListViewController {
     }
     
     @objc func didTapSearchButton() {
-        self.fetchArticles(query: self.searchBar.searchTextField.text!)
+        guard let searchText = self.searchBar.searchTextField.text else { return }
+        
+        self.viewModel.requestArticles(searchText: searchText)
     }
 }
 
 extension NewsListViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        let query: String = self.searchBar.searchTextField.text!
-        self.fetchArticles(query: query)
+        guard let searchText = self.searchBar.searchTextField.text else { return }
+        
+        self.viewModel.requestArticles(searchText: searchText)
     }
 }
 
-extension NewsListViewController: UITableViewDelegate, UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.newsModel.items.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "NewsTableViewCell", for: indexPath) as? NewsTableViewCell else { return UITableViewCell() }
-        let news = self.newsModel.items[indexPath.row]
-        cell.configure(item: news)
-        return cell
-    }
-    
+extension NewsListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
     }

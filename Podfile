@@ -7,5 +7,7 @@ target 'NewsApp' do
 
   # Pods for NewsApp
   pod 'Alamofire'
+  pod 'RxSwift'
+  pod 'RxCocoa'
 
 end

@@ -47,22 +47,9 @@ class NewsTableViewCell: UITableViewCell {
         ])
     }
     
-    func configure(item: News) {
-        // Convert title text from html to String
-        self.titleLabel.text = item.title.htmlToString
-        
-        // Change format of pubDate
-        let origDateStr = item.pubDate
-        let origDateFormatter = DateFormatter()
-        origDateFormatter.dateFormat = "E, dd MMM yyyy HH:mm:ss Z"
-        origDateFormatter.locale = Locale(identifier: "en_US")
-        let origDateObj: Date = origDateFormatter.date(from: origDateStr)!
-        
-        let myDateFormatter = DateFormatter()
-        myDateFormatter.locale = Locale(identifier: "ko_KR")
-        myDateFormatter.dateFormat = "yyyy년 MM월 dd일"
-        let formattedDateStr = myDateFormatter.string(from: origDateObj)
-        self.dateLabel.text = formattedDateStr
+    func configure(_ data: NewsData) {
+        self.titleLabel.text = data.title.htmlToString
+        self.dateLabel.text = data.dateString
     }
     
     required init?(coder: NSCoder) {

@@ -17,8 +17,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         self.window = UIWindow(windowScene: scene)
         
-        let vm = NewsModel()
-        let vc = NewsListViewController(newsModel: vm)
+        let vm = NewsViewModel(usecase: NewsUsecase())
+        let vc = NewsListViewController(viewModel: vm)
         let rootVC: UIViewController = UINavigationController(rootViewController: vc)
         
         self.window?.rootViewController = rootVC
