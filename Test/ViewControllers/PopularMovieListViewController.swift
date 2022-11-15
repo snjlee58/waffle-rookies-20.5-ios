@@ -57,6 +57,7 @@ class PopularMovieListViewController: UIViewController {
             self.collectionView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor),
             self.collectionView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor)
         ])
+        self.collectionView.showsVerticalScrollIndicator = false
     }
     
     func applyDesign() {

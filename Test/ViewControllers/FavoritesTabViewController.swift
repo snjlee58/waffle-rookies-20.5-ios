@@ -60,6 +60,8 @@ class FavoritesTabViewController: UIViewController {
         self.collectionView.register(MovieCollectionViewCell.self, forCellWithReuseIdentifier: "MovieCollectionViewCell")
         self.collectionView.rx.setDelegate(self)
             .disposed(by: disposeBag)
+        
+        self.collectionView.showsVerticalScrollIndicator = false
     }
 }
 
