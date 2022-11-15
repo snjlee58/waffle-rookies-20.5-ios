@@ -8,14 +8,21 @@
 import UIKit
 
 class MovieTabViewController: UIViewController {
-    let filterSegControl = UISegmentedControl(items: ["Popular", "Top Rated"])
-    
-    let popularMovieVC: PopularMovieListViewController
-    let topMovieVC: TopMovieListViewController
+    private let filterSegControl = UISegmentedControl(items: ["Popular", "Top Rated"])
+    private let popularMovieVC: PopularMovieListViewController
+    private let topMovieVC: TopMovieListViewController
     
     init(favoritesViewModel: FavoritesViewModel) {
-        self.popularMovieVC = PopularMovieListViewController(viewModel: PopularMovieViewModel(), favoritesViewModel: favoritesViewModel)
-        self.topMovieVC = TopMovieListViewController(viewModel: TopMovieViewModel(), favoritesViewModel: favoritesViewModel)
+        let popularMovieRepository = PopularMovieRepository()
+        let popularMovieUsecase = PopularMovieUsecase(repository: popularMovieRepository)
+        let popularMovieViewModel = PopularMovieViewModel(usecase: popularMovieUsecase)
+        self.popularMovieVC = PopularMovieListViewController(viewModel: popularMovieViewModel, favoritesViewModel: favoritesViewModel)
+        
+        let topMovieRepository = TopMovieRepository()
+        let topMovieUsecase = TopMovieUsecase(repository: topMovieRepository)
+        let topMovieViewModel = TopMovieViewModel(usecase: topMovieUsecase)
+        self.topMovieVC = TopMovieListViewController(viewModel: topMovieViewModel, favoritesViewModel: favoritesViewModel)
+        
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -26,24 +33,12 @@ class MovieTabViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
+        setupSegmentedControl()
     }
     
     func configureUI() {
-        // Configure general UI
         self.title = "Movies"
         
-        // Configure segmentedControl
-        self.view.addSubview(self.filterSegControl)
-        self.filterSegControl.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            self.filterSegControl.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
-            self.filterSegControl.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 40),
-            self.filterSegControl.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor),
-            self.filterSegControl.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor)
-        ])
-        filterSegControl.addTarget(self, action: #selector(didTapSegment), for: .valueChanged)
-              self.filterSegControl.selectedSegmentIndex = 0
-
         // Add popular movies child VC
         addChild(popularMovieVC)
         self.view.addSubview(popularMovieVC.view)
@@ -55,8 +50,21 @@ class MovieTabViewController: UIViewController {
         self.view.addSubview(topMovieVC.view)
         topMovieVC.didMove(toParent: self)
         topMovieVC.view.frame.origin.y = 150
-        
+
         topMovieVC.view.isHidden = true
+    }
+    
+    private func setupSegmentedControl() {
+        self.view.addSubview(self.filterSegControl)
+        self.filterSegControl.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            self.filterSegControl.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
+            self.filterSegControl.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 40),
+            self.filterSegControl.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor),
+            self.filterSegControl.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor)
+        ])
+        filterSegControl.addTarget(self, action: #selector(didTapSegment), for: .valueChanged)
+              self.filterSegControl.selectedSegmentIndex = 0
     }
     
     @objc func didTapSegment(segment: UISegmentedControl) {

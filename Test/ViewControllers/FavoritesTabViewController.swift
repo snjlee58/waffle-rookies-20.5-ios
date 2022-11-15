@@ -5,21 +5,19 @@
 //  Created by 이선재 on 2022/10/26.
 //
 
-
 import UIKit
 import RxSwift
 import RxCocoa
 
 class FavoritesTabViewController: UIViewController {
-    let disposeBag = DisposeBag()
+    private let disposeBag = DisposeBag()
     
-    let collectionView = UICollectionView(frame: .zero, collectionViewLayout: MoviesCollectionViewFlowLayout())
+    private let collectionView = UICollectionView(frame: .zero, collectionViewLayout: MoviesCollectionViewFlowLayout())
     
-    let favoritesViewModel: FavoritesViewModel
-    let favoritesViewModelObserver = PublishRelay<[Movie]>()
+    private let viewModel: FavoritesViewModel
     
-    init(favoritesViewModel: FavoritesViewModel) {
-        self.favoritesViewModel = favoritesViewModel
+    init(viewModel: FavoritesViewModel) {
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -29,22 +27,14 @@ class FavoritesTabViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.viewModel.loadMovies()
+        
         self.bindCollectionView()
-        self.configureCollectionView()
+        self.setupCollectionView()
+        
         self.title = "Favorites"
-        self.favoritesViewModel.loadFavoritesList()
         
-        // NotificationCenter addObserver (update isLiked)
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(isLikedNotification(_:)),
-                                               name: NSNotification.Name("isLikedNotificationMovie"),
-                                               object: nil)
-        
-        // NotificationCenter addObserver (update FavoritesTabList)
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(favoritesTabNotification(_:)),
-                                               name: NSNotification.Name("favoritesTab"),
-                                               object: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -52,14 +42,13 @@ class FavoritesTabViewController: UIViewController {
     }
     
     private func bindCollectionView() {
-        self.favoritesViewModel.favoriteListObservable
-            .bind(to: self.collectionView.rx.items(cellIdentifier: "MovieCollectionViewCell", cellType: MovieCollectionViewCell.self)) { (index: Int, movie: Movie, cell: MovieCollectionViewCell) in
-                cell.configure(movie: movie)
+        self.viewModel.movieDataSource
+            .bind(to: self.collectionView.rx.items(cellIdentifier: "MovieCollectionViewCell", cellType: MovieCollectionViewCell.self)) { index, movieData, cell in
+                cell.configure(movieData: movieData)
             }.disposed(by: disposeBag)
     }
     
-    private func configureCollectionView() {
-        // Configure collectionView
+    private func setupCollectionView() {
         self.view.addSubview(self.collectionView)
         self.collectionView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -72,34 +61,15 @@ class FavoritesTabViewController: UIViewController {
         self.collectionView.rx.setDelegate(self)
             .disposed(by: disposeBag)
     }
-    
-    @objc func isLikedNotification(_ notification: Notification) {
-        guard let isLikedNotificationMovie = notification.object as? [String: Any] else { return }
-        guard let isStar = isLikedNotificationMovie["isStar"] as? Bool else { return }
-        guard let id = isLikedNotificationMovie["id"] as? Int else { return }
-        guard let index = self.favoritesViewModel.favoritesList.firstIndex(where: { $0.id == id }) else { return }
-        
-        // Update isLiked in movieList
-        self.favoritesViewModel.favoritesList[index].isLiked = isStar
-    }
-    
-    @objc func favoritesTabNotification(_ notification: Notification) {
-        guard let isLikedNotificationMovie = notification.object as? [String: Any] else { return }
-        guard let isStar = isLikedNotificationMovie["isStar"] as? Bool else { return }
-        guard let id = isLikedNotificationMovie["id"] as? Int else { return }
-        guard let index = self.favoritesViewModel.favoritesList.firstIndex(where: { $0.id == id }) else { return }
-        
-        self.favoritesViewModel.favoritesList[index].isLiked = isStar
-        if (!isStar) {
-            self.favoritesViewModel.favoritesList.remove(at: index)
-        }
-    }
 }
 
 extension FavoritesTabViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-            let movie = self.favoritesViewModel.favoritesList[indexPath.row]
-            let movieDetailVC = MovieDetailViewController(movie: movie)
+        let movie = self.viewModel.getMovieAtIndex(index: indexPath.row)
+        
+        let movieDetailUsecase = MovieDetailUsecase(movie: movie)
+        let movieDetailVM = MovieDetailViewModel(usecase: movieDetailUsecase)
+        let movieDetailVC = MovieDetailViewController(viewModel: movieDetailVM)
 
         self.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(movieDetailVC, animated: true)

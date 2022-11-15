@@ -20,9 +20,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         self.window = UIWindow(windowScene: scene)
         
-        let rootVC = TabBarViewController()
+        let favoritesUsecase = FavoritesUsecase()
+        let favoritesViewModel = FavoritesViewModel(usecase: favoritesUsecase)
+        let rootViewController = TabBarViewController(favoritesViewModel: favoritesViewModel)
         
-        self.window?.rootViewController = rootVC
+        self.window?.rootViewController = rootViewController
         self.window?.makeKeyAndVisible()
     }
 

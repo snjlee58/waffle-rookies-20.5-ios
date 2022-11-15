@@ -13,19 +13,32 @@ class MovieCollectionViewCell: UICollectionViewCell {
         return "MovieCollectionViewCell"
     }
     
-    let posterImageView = UIImageView()
-    let titleLabel = UILabel()
-    let ratingLabel = UILabel()
+    private let posterImageView = UIImageView()
+    private let titleLabel = UILabel()
+    private let ratingLabel = UILabel()
     
     override init(frame: CGRect){
         super.init(frame: frame)
         
-        // General cell design
+        applyDesign()
+        setupPosterImageView()
+        setupTitleLabel()
+        setupRatingLabel()
+    }
+    
+    func configure(movieData: MovieData) {
+        self.posterImageView.sd_setImage(with: URL(string: movieData.posterUrlString), completed: nil)
+        self.titleLabel.text = movieData.title
+        self.ratingLabel.text = "⭐️ \(movieData.vote_average)"
+    }
+    
+    private func applyDesign() {
         self.contentView.backgroundColor = .lightGray
         self.contentView.layer.cornerRadius = 20.0
         self.contentView.isOpaque = true
-        
-        // posterImageView
+    }
+    
+    private func setupPosterImageView() {
         self.posterImageView.layer.cornerRadius = 8
         self.posterImageView.contentMode = .scaleAspectFit
         
@@ -38,8 +51,9 @@ class MovieCollectionViewCell: UICollectionViewCell {
             self.posterImageView.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 5),
             self.posterImageView.bottomAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 150)
         ])
-        
-        // titleLabel
+    }
+    
+    private func setupTitleLabel() {
         self.titleLabel.font = UIFont.boldSystemFont(ofSize: 15)
         self.titleLabel.textColor = .black
         self.titleLabel.lineBreakMode = .byWordWrapping
@@ -56,8 +70,9 @@ class MovieCollectionViewCell: UICollectionViewCell {
             titleLabel.topAnchor.constraint(equalTo: self.posterImageView.bottomAnchor, constant: 5),
             titleLabel.bottomAnchor.constraint(equalTo: self.titleLabel.topAnchor, constant: 30)
         ])
-        
-        // ratingLabel
+    }
+    
+    private func setupRatingLabel() {
         self.ratingLabel.font = .systemFont(ofSize: 15)
         self.ratingLabel.textColor = .black
         self.ratingLabel.lineBreakMode = .byWordWrapping
@@ -73,14 +88,6 @@ class MovieCollectionViewCell: UICollectionViewCell {
             ratingLabel.topAnchor.constraint(equalTo: self.titleLabel.bottomAnchor, constant: 5),
             ratingLabel.bottomAnchor.constraint(equalTo: self.ratingLabel.topAnchor, constant: 20)
         ])
-    }
-    
-    func configure(movie: Movie) {
-        let urlString = "https://image.tmdb.org/t/p/original\(movie.poster_path)"
-        self.posterImageView.sd_setImage(with: URL(string: urlString), completed: nil)
-        
-        self.titleLabel.text = movie.title
-        self.ratingLabel.text = "⭐️ \(movie.vote_average)"
     }
     
     required init?(coder: NSCoder) {
