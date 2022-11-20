@@ -11,18 +11,18 @@ import RxSwift
 import RxCocoa
 
 class MovieDetailViewController: UIViewController {
-    let disposeBag = DisposeBag()
+    private let disposeBag = DisposeBag()
+
+    private let viewModel: MovieDetailViewModel
+
+    private let posterImageView = UIImageView()
+    private let titleLabel = UILabel()
+    private let ratingLabel = UILabel()
+    private var starButton = UIBarButtonItem()
+    private let overviewTextView = UITextView()
     
-    var movie: Movie
-    
-    let posterImageView = UIImageView()
-    let titleLabel = UILabel()
-    let ratingLabel = UILabel()
-    var starButton = UIBarButtonItem()
-    let overviewTextView = UITextView()
-    
-    init(movie: Movie) {
-        self.movie = movie
+    init(viewModel: MovieDetailViewModel) {
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -34,11 +34,19 @@ class MovieDetailViewController: UIViewController {
     }
     
     private func setupLayout() {
-        // starButton
+        setupLikeButton()
+        setupPosterImageView()
+        setupTitleLabel()
+        setupRatingLabel()
+        setupOverviewTextView()
+    }
+    
+    private func setupLikeButton() {
         self.starButton.tintColor = .orange
         self.navigationItem.rightBarButtonItem = self.starButton
-        
-        // posterImageView
+    }
+    
+    private func setupPosterImageView() {
         self.posterImageView.contentMode = .scaleAspectFit
         
         self.view.addSubview(self.posterImageView)
@@ -50,8 +58,9 @@ class MovieDetailViewController: UIViewController {
             self.posterImageView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
             self.posterImageView.bottomAnchor.constraint(equalTo: self.posterImageView.topAnchor, constant: 200),
         ])
-        
-        // titleLabel
+    }
+    
+    private func setupTitleLabel() {
         self.titleLabel.textAlignment = .center
         self.titleLabel.lineBreakMode = .byWordWrapping
         self.titleLabel.numberOfLines = 0
@@ -65,8 +74,9 @@ class MovieDetailViewController: UIViewController {
             self.titleLabel.topAnchor.constraint(equalTo: self.posterImageView.bottomAnchor, constant: 10),
             self.titleLabel.bottomAnchor.constraint(equalTo: self.titleLabel.topAnchor, constant: 30)
         ])
-        
-        // ratingLabel
+    }
+    
+    private func setupRatingLabel() {
         self.view.addSubview(self.ratingLabel)
         self.ratingLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -77,8 +87,9 @@ class MovieDetailViewController: UIViewController {
             self.ratingLabel.bottomAnchor.constraint(equalTo: self.ratingLabel.topAnchor, constant: 30)
         ])
         self.ratingLabel.textAlignment = .center
-        
-        // overviewTextView
+    }
+    
+    private func setupOverviewTextView() {
         self.overviewTextView.font = .systemFont(ofSize: 12)
         self.overviewTextView.isSelectable = false
         
@@ -93,55 +104,41 @@ class MovieDetailViewController: UIViewController {
         ])
     }
     
-    func configure() {
+    private func applyDesign() {
+        self.view.backgroundColor = .white
+    }
+    
+    private func configure() {
         self.starButton = UIBarButtonItem(image: nil, style: .plain, target: self, action: #selector(tapStarButton))
-        self.starButton.image = self.movie.isLiked ? UIImage(systemName: "star.fill") : UIImage(systemName: "star")
+        self.starButton.image = self.viewModel.movie.isLiked ? UIImage(systemName: "star.fill") : UIImage(systemName: "star")
         
-        let urlString = "https://image.tmdb.org/t/p/original\(movie.poster_path)"
+        let urlString = "https://image.tmdb.org/t/p/original\(self.viewModel.movie.poster_path)"
         self.posterImageView.sd_setImage(with: URL(string: urlString), completed: nil)
         
-        self.titleLabel.text = self.movie.title
-        self.ratingLabel.text = "⭐️ \(self.movie.vote_average)"
-        self.overviewTextView.text = self.movie.overview
+        self.titleLabel.text = self.viewModel.movie.title
+        self.ratingLabel.text = "⭐️ \(self.viewModel.movie.vote_average)"
+        self.overviewTextView.text = self.viewModel.movie.overview
     }
     
     @objc func tapStarButton() {
-        let isStar = self.movie.isLiked
+        let isStar = self.viewModel.movie.isLiked
 
         if isStar {
             self.starButton.image = UIImage(systemName: "star")
         } else {
             self.starButton.image = UIImage(systemName: "star.fill")
         }
-        self.movie.isLiked = !isStar
+        
+        self.viewModel.setLikedStatus(isLiked: !isStar)
         
         // NotificationCenter (update isLiked)
         NotificationCenter.default.post(name: NSNotification.Name("isLikedNotificationMovie"),
                                         object: [
-                                            "isStar": self.movie.isLiked ?? false,
-                                            "id": self.movie.id
+                                            "movie": self.viewModel.movie,
                                         ],
                                         userInfo: nil)
     }
     
-    private func applyDesign() {
-        self.view.backgroundColor = .white
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        if self.isMovingFromParent {
-            // NotificationCenter (update Favorites Tab)
-            NotificationCenter.default.post(name: NSNotification.Name("favoritesTab"),
-                                            object: [
-                                                "isStar": self.movie.isLiked ?? false,
-                                                "id": self.movie.id
-                                            ],
-                                            userInfo: nil)
-        }
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
     }

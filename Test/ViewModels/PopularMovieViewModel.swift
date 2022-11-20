@@ -9,70 +9,55 @@ import Foundation
 import Alamofire
 import RxSwift
 
-class PopularMovieViewModel: Decodable {
-    var isPaginating = false
-    var results = [Movie]()
+final class PopularMovieViewModel {
+    private let usecase: PopularMovieUsecase
     
-    private enum CodingKeys: String, CodingKey {
-        case results
+    init(usecase: PopularMovieUsecase) {
+        self.usecase = usecase
     }
     
-    required init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-
-        results = try container.decodeIfPresent([Movie].self, forKey: .results) ?? [Movie]()
-
-        isPaginating = false
-    }
-    
-    init(){
-        
-    }
-    
-    func fetchMovies(pagination: Bool, page: Int) -> Observable<[Movie]> {
-        isPaginating = true
-        return Observable.create { (observer) -> Disposable in
-            
-            self.request(pagination: pagination, page: page) { (error, movies) in
-                if let error = error {
-                    observer.onError(error)
-                }
-                
-                if let movies = movies {
-                    self.results.append(contentsOf: movies)
-                    observer.onNext(self.results)
-                }
-                
-                if self.isPaginating {
-                    self.isPaginating = false
-                }
-                
-                observer.onCompleted()
+    var movieDataSource: Observable<[MovieData]> {
+        return self.usecase.movies
+            .map { movie in
+                return movie.map { MovieData(movie: $0)}
             }
-            return Disposables.create()
-        }
     }
-    
-    func request(pagination: Bool, page: Int, completionHandler: @escaping (Error?, [Movie]?) -> Void) {
-        guard let url = URL(string: "https://api.themoviedb.org/3/movie/popular") else { return }
-
-        let parameters = MovieRequestModel(page: page)
-        
-        let headers: HTTPHeaders = [
-            "Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxMDMzZWEzYTRhM2RiNmM4ZmE2NDYxNDkzYzA3NGI4YiIsInN1YiI6IjYzNDI1OTY0YTI4NGViMDA3OWM0MTYxZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.eV0F9zBLPdjef9gth_012Q3We_jiY_bjLRyuaqS9DkI"
-        ]
-
-        AF.request(url, method: .get, parameters: parameters, headers: headers)
-            .responseDecodable(of: PopularMovieViewModel.self) { response in
-                switch response.result {
-                case .success(let result):
-                    completionHandler(nil, result.results)
-                case .failure(let error):
-                    print(error)
-                    completionHandler(error, nil)
-                }
-            }
-            .resume()
-        }
 }
 
+extension PopularMovieViewModel {
+    func requestMovies() {
+        self.usecase.requestMovies()
+    }
+    
+    func loadMoreMovies() {
+        self.usecase.loadMoreMovies()
+    }
+    
+    func getMovieAtIndex(index: Int) -> Movie {
+        return self.usecase.getMovieAtIndex(index: index)
+    }
+    
+    func setLikedAtIndex(index: Int, isLiked: Bool) {
+        self.usecase.setLikedAtIndex(index: index, isLiked: isLiked)
+    }
+}
+
+struct MovieData {
+    let title: String
+    let poster_path: String
+    let vote_average: Float
+    let overview: String
+    var isLiked: Bool
+    let id: Int
+    let posterUrlString: String
+    
+    init(movie: Movie) {
+        self.title = movie.title
+        self.poster_path = movie.poster_path
+        self.vote_average = movie.vote_average
+        self.overview = movie.overview
+        self.isLiked = movie.isLiked
+        self.id = movie.id
+        self.posterUrlString = "https://image.tmdb.org/t/p/original\(self.poster_path)"
+    }
+}
